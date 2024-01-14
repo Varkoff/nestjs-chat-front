@@ -19,6 +19,7 @@ export const getConversationsSchema = z.array(
 			z.object({
 				id: z.string(),
 				firstName: z.string(),
+				avatarUrl: z.string().optional().nullable(),
 			})
 		),
 		messages: z.array(
@@ -42,6 +43,7 @@ export const getConversationSchema = z.object({
 		z.object({
 			id: z.string(),
 			firstName: z.string(),
+			avatarUrl: z.string().optional().nullable(),
 		})
 	),
 });

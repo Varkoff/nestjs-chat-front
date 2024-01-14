@@ -5,6 +5,7 @@ const getAuthenticatedUserSchema = z.object({
 	email: z.string(),
 	id: z.string(),
 	firstName: z.string(),
+	avatarUrl: z.string().optional().nullable(),
 });
 
 export const getOptionalUser = async ({ request }: { request: Request }) => {

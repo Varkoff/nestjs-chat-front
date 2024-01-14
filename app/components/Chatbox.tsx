@@ -60,6 +60,13 @@ export const Chatbox = ({
 			{recipientUser ? (
 				<div className='flex flex-col px-3 py-2 bg-white border-2 border-slate-100'>
 					<div className='text-xs'> {recipientUser.firstName}</div>
+					{recipientUser.avatarUrl ? (
+						<img
+							src={recipientUser.avatarUrl}
+							className='w-10 h-auto flex-shrink-0'
+							alt=''
+						/>
+					) : null}
 					{/* <div className='text-xs text-slate-400'>{recipientUser.email}</div> */}
 				</div>
 			) : null}

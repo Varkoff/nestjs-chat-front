@@ -12,7 +12,7 @@ export const loggedOutRoutes: RouteItemType[] = [
 
 export const loggedInRoutes: RouteItemType[] = [
 	{ url: '/', name: 'Dashboard' },
-	// { url: '/', name: 'Dashboard' },
+	{ url: '/settings', name: 'Settings' },
 ];
 
 export const Navigation = () => {
@@ -25,6 +25,14 @@ export const Navigation = () => {
 						{loggedInRoutes.map((route) => (
 							<RouteItem route={route} key={route.name} />
 						))}
+
+						{user.avatarUrl ? (
+							<img
+								src={user.avatarUrl}
+								className='w-10 h-auto flex-shrink-0'
+								alt=''
+							/>
+						) : null}
 
 						<Form method='POST' action='logout'>
 							<Button
