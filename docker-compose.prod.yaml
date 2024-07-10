@@ -12,4 +12,4 @@ services:
     image: algomax/nestjs-chat-frontend:production
     restart: always
     ports:
-      - 3000:3000
+      - 3060:3000
