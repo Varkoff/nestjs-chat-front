@@ -1,5 +1,5 @@
 import { PaperPlaneIcon } from '@radix-ui/react-icons';
-import { useFetcher } from '@remix-run/react';
+import { Form, useFetcher } from '@remix-run/react';
 import { useEffect, useRef } from 'react';
 import { useUser } from '~/root.tsx';
 import type { MessagesType } from '~/routes/conversations_.$conversationId.tsx';
@@ -58,16 +58,39 @@ export const Chatbox = ({
 	return (
 		<div className='flex flex-col gap-y-2 mt-4 w-full max-w-md mx-auto'>
 			{recipientUser ? (
-				<div className='flex flex-col px-3 py-2 bg-white border-2 border-slate-100'>
-					<div className='text-xs'> {recipientUser.firstName}</div>
-					{recipientUser.avatarUrl ? (
-						<img
-							src={recipientUser.avatarUrl}
-							className='w-10 h-auto flex-shrink-0'
-							alt=''
-						/>
-					) : null}
-					{/* <div className='text-xs text-slate-400'>{recipientUser.email}</div> */}
+				<div className='flex items-center gap-2'>
+					<div className='flex flex-col px-3 py-2 bg-white border-2 border-slate-100'>
+						<div className='text-xs'> {recipientUser.firstName}</div>
+						{recipientUser.avatarUrl ? (
+							<img
+								src={recipientUser.avatarUrl}
+								className='w-10 h-auto flex-shrink-0'
+								alt=''
+							/>
+						) : null}
+					</div>
+					<Form method='POST' action={`/donate/${recipientUser.id}`}>
+						<Button variant={'outline'}>Faire un don</Button>
+					</Form>
+					<ul className='text-xs flex flex-col gap-1'>
+						<span>Dons envoyés</span>
+						{recipientUser.givenDonations.map((gd) => (
+							<li key={gd.id}>
+								{(gd?.amount ? gd.amount / 100 : 0).toFixed(2)}€{' '}
+								{new Date(gd.createdAt).toLocaleDateString()}
+							</li>
+						))}
+					</ul>
+
+					<ul className='text-xs flex flex-col gap-1'>
+						<span>Dons reçus</span>
+						{recipientUser.receivedDonations.map((gd) => (
+							<li key={gd.id}>
+								{(gd?.amount ? gd.amount / 100 : 0).toFixed(2)}€{' '}
+								{new Date(gd.createdAt).toLocaleDateString()}
+							</li>
+						))}
+					</ul>
 				</div>
 			) : null}
 			<div

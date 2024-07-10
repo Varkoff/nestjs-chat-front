@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { fetcher } from './server/utils.server.ts';
 import { getUserToken, logout } from './session.server.ts';
 
 const getAuthenticatedUserSchema = z.object({
@@ -6,6 +7,7 @@ const getAuthenticatedUserSchema = z.object({
 	id: z.string(),
 	firstName: z.string(),
 	avatarUrl: z.string().optional().nullable(),
+	canReceiveMoney: z.boolean(),
 });
 
 export const getOptionalUser = async ({ request }: { request: Request }) => {
@@ -41,4 +43,43 @@ export const requireUser = async ({ request }: { request: Request }) => {
 		return user;
 	}
 	throw await logout({ request });
+};
+
+const stripeConnectSchema = z.object({
+	accountLink: z.string(),
+});
+export const startStripeOnboarding = async ({
+	request,
+}: {
+	request: Request;
+}) => {
+	const response = await fetcher({
+		request,
+		url: '/stripe/connect',
+		method: 'POST',
+		data: {},
+	});
+	return stripeConnectSchema.parse(response);
+};
+
+const stripeDonateUrlSchema = z.object({
+	error: z.boolean(),
+	message: z.string(),
+	sessionUrl: z.string().nullable(),
+});
+
+export const createDonation = async ({
+	request,
+	receivingUserId,
+}: {
+	request: Request;
+	receivingUserId: string;
+}) => {
+	const response = await fetcher({
+		request,
+		url: `/stripe/donate/${receivingUserId}`,
+		method: 'POST',
+		data: {},
+	});
+	return stripeDonateUrlSchema.parse(response);
 };

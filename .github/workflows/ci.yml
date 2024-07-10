@@ -1,0 +1,65 @@
+name: 🚀 Deploy
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request: {}
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  build:
+    name: 🐳 build
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
+  
+  deploy:
+    name: 🚀 Deploy
+    runs-on: [self-hosted]
+    needs: [build]
+    # needs: [build]
+    # only build/deploy main branch on pushes
+    if: ${{ (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev') && github.event_name == 'push' }}
+    env:
+      BACKEND_URL: ${{ secrets.BACKEND_URL }}
+      WEBSOCKET_URL: ${{ secrets.WEBSOCKET_URL }}
+
+    steps:
+      - name: Cache node modules
+        uses: actions/cache@v4.0.0
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4.1.1
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      # - name: 🚀 Run Docker Compose on Staging
+      #   if: ${{ github.ref == 'refs/heads/dev' }}
+      #   env:
+      #     DATABASE_URL: ${{ secrets.DATABASE_URL_STAGING }}
+      #     FRONTEND_URL: ${{ secrets.FRONTEND_URL_STAGING }}
+      #   run: |
+      #     docker pull algomax/nestjs-chat-frontend:latest
+      #     docker compose -f docker-compose.dev.yaml up -d
+      #     docker system prune --all --volumes --force
+
+      - name: 🚀 Run Docker Compose on Production
+        if: ${{ github.ref == 'refs/heads/main' }}
+        # env:
+        #   FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
+        #   DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          docker pull algomax/nestjs-chat-frontend:production
+          docker compose -f docker-compose.prod.yaml up -d
+          docker system prune --all --volumes --force

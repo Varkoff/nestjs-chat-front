@@ -2,6 +2,7 @@ import { cssBundleHref } from '@remix-run/css-bundle';
 import type { LinksFunction, LoaderFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import {
+	Link,
 	Links,
 	LiveReload,
 	Meta,
@@ -14,6 +15,7 @@ import { z } from 'zod';
 import tailwindCss from '~/global.css';
 import { getOptionalUser } from './auth.server.ts';
 import { Navigation } from './components/Navigation.tsx';
+import { buttonVariants } from './components/ui/button.tsx';
 import { SocketProvider } from './hooks/useSocket.tsx';
 const envSchema = z.object({
 	// BACKEND_URL: z.string(),
@@ -60,6 +62,7 @@ export const links: LinksFunction = () => [
 ];
 
 export default function App() {
+	const user = useOptionalUser();
 	return (
 		<html lang='fr' className={`h-full overflow-x-hidden`}>
 			<head>
@@ -71,6 +74,32 @@ export default function App() {
 
 			<SocketProvider>
 				<body className='bg-slate-50 h-full min-h-full'>
+					{user ? (
+						<div
+							className={`w-full flex justify-center items-center gap-2 py-2 px-3 text-center text-xs ${
+								user.canReceiveMoney
+									? 'bg-emerald-50 text-emerald-800'
+									: 'bg-red-50 text-red-800'
+							}`}
+						>
+							<span>
+								{user.canReceiveMoney
+									? 'Votre compte est bien configuré pour recevoir des donations'
+									: 'Vous devez configurer votre compte pour recevoir des donations.'}
+							</span>
+							{!user.canReceiveMoney ? (
+								<Link
+									className={buttonVariants({
+										variant: 'default',
+										size: 'sm',
+									})}
+									to='/onboarding'
+								>
+									Je configure mon compte
+								</Link>
+							) : null}
+						</div>
+					) : null}
 					<Navigation />
 					<main className='h-full px-4 py-3 lg:px-12 lg:py-10'>
 						<Outlet />

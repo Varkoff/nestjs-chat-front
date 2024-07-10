@@ -35,6 +35,12 @@ export const getConversationsSchema = z.array(
 	})
 );
 
+const donationSchema = z.object({
+	amount: z.number().nullable(),
+	createdAt: z.string(),
+	id: z.string(),
+});
+
 export const getConversationSchema = z.object({
 	id: z.string(),
 	updatedAt: z.string(),
@@ -44,6 +50,9 @@ export const getConversationSchema = z.object({
 			id: z.string(),
 			firstName: z.string(),
 			avatarUrl: z.string().optional().nullable(),
+
+			givenDonations: z.array(donationSchema),
+			receivedDonations: z.array(donationSchema),
 		})
 	),
 });

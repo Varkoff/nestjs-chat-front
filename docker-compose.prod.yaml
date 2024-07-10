@@ -1,0 +1,15 @@
+services:
+  nestjs-chat-frontend_production:
+    environment:
+      - BACKEND_URL
+      - WEBSOCKET_URL
+
+
+    container_name: nestjs-chat-frontend_production
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    image: algomax/nestjs-chat-frontend:production
+    restart: always
+    ports:
+      - 3000:3000
