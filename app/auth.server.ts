@@ -18,7 +18,7 @@ export const getOptionalUser = async ({ request }: { request: Request }) => {
 	}
 	try {
 		// 2. On appelle notre API Nest avec les données du formulaire
-		const response = await fetch('http://localhost:8000/auth', {
+		const response = await fetch(`${process.env.BACKEND_URL}/auth`, {
 			// method: 'POST',
 			// body: JSON.stringify(parsedJson),
 			headers: {

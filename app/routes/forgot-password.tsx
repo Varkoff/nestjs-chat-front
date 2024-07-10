@@ -66,7 +66,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 		const token = urlParams.get('token');
 
 		const response = await fetch(
-			`http://localhost:8000/auth/verify-reset-password-token?token=${token}`,
+			`${process.env.BACKEND_URL}/auth/verify-reset-password-token?token=${token}`,
 			{
 				headers: {
 					'Content-Type': 'application/json',
@@ -113,7 +113,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 				// 2. On appelle notre API Nest avec les données du formulaire
 				const response = await fetch(
-					'http://localhost:8000/auth/request-reset-password',
+					`${process.env.BACKEND_URL}/auth/request-reset-password`,
 					{
 						method: 'POST',
 						body: JSON.stringify(parsedJson.data),
@@ -153,7 +153,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 				// 2. On appelle notre API Nest avec les données du formulaire
 				const response = await fetch(
-					'http://localhost:8000/auth/reset-password',
+					`${process.env.BACKEND_URL}/auth/reset-password`,
 					{
 						method: 'POST',
 						body: JSON.stringify({ password, token }),

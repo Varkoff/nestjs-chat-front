@@ -46,7 +46,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 		const parsedJson = loginSchema.parse(jsonData);
 
 		// 2. On appelle notre API Nest avec les données du formulaire
-		const response = await fetch('http://localhost:8000/auth/login', {
+		const response = await fetch(`${process.env.BACKEND_URL}/auth/login`, {
 			method: 'POST',
 			body: JSON.stringify(parsedJson),
 			headers: {
